@@ -158,6 +158,13 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
+    align-items: stretch;
+    /* Ensure all cards stretch to same height */
+}
+
+.subspaces-grid>div {
+    display: flex;
+    /* Make wrapper flex container */
 }
 
 .subspace-card {
@@ -166,6 +173,12 @@
     padding: 1.5rem;
     border: 2px solid #000000;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    min-height: 300px;
+    /* Set minimum height for consistency */
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    /* Fill parent wrapper */
 }
 
 .subspace-card:hover {
@@ -229,8 +242,12 @@
     background: #f8f8f8;
     border-radius: 4px;
     padding: 1rem;
-    min-height: 80px;
+    min-height: 120px;
     overflow-x: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .trivial-space {
@@ -268,6 +285,45 @@
 
 .latex-display .katex {
     font-size: 1.1em;
+}
+
+/* Visualize Section */
+.visualize-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.visualize-button {
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.visualize-button:hover {
+    background: #222222;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.visualize-button:active {
+    transform: translateY(0);
+}
+
+.visualize-button svg {
+    width: 20px;
+    height: 20px;
 }
 
 /* ========================================== */

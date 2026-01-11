@@ -50,14 +50,25 @@ export function createEmptyMatrix(rows, cols, defaultValue = '0') {
 }
 
 /**
- * Resizes a matrix to new dimensions, preserving existing values
+ * Resize matrix to new dimensions, preserving existing values
  */
-export function resizeMatrix(matrix, newRows, newCols, defaultValue = '0') {
-    return Array(newRows).fill(null).map((_, i) =>
-        Array(newCols).fill(null).map((_, j) =>
-            (matrix[i] && matrix[i][j]) ? matrix[i][j] : defaultValue
-        )
-    );
+export function resizeMatrix(matrix, newRows, newCols) {
+    if (!matrix || !Array.isArray(matrix)) {
+        return Array(newRows).fill(null).map(() => Array(newCols).fill(''));
+    }
+
+    const result = Array(newRows).fill(null).map(() => Array(newCols).fill(''));
+
+    const minRows = Math.min(matrix.length, newRows);
+    const minCols = Math.min(matrix[0]?.length || 0, newCols);
+
+    for (let i = 0; i < minRows; i++) {
+        for (let j = 0; j < minCols; j++) {
+            result[i][j] = matrix[i]?.[j] ?? '';
+        }
+    }
+
+    return result;
 }
 
 /**

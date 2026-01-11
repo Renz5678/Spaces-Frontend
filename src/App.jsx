@@ -211,8 +211,8 @@ function App() {
         } />
       </Routes>
 
-      <footer className="footer">
-        <p>Built with SymPy for mathematical precision</p>
+      <footer className="app-footer">
+        <p>© 2025 Fundamental Subspaces Calculator</p>
       </footer>
 
       {/* Auth Modal */}

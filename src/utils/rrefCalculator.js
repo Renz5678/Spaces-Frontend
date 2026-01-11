@@ -118,13 +118,32 @@ export class Matrix {
 }
 
 /**
- * Compute RREF and pivot columns
- * Returns { rref: Matrix, pivots: number[] }
+ * Compute RREF and pivot columns with operation tracking
+ * Returns { rref: Matrix, pivots: number[], operations: Operation[] }
  */
-export function computeRREF(matrix) {
+export function computeRREF(matrix, trackOperations = false) {
     const m = matrix.clone();
     const pivots = [];
+    const operations = trackOperations ? [] : null;
     let currentRow = 0;
+
+    // Helper to record operation
+    const recordOperation = (type, notation, description, params) => {
+        if (!trackOperations) return;
+        operations.push({
+            type,
+            notation,
+            description,
+            params,
+            matrixBefore: m.clone(),
+        });
+    };
+
+    // Helper to update last operation with result
+    const updateLastOperation = () => {
+        if (!trackOperations || operations.length === 0) return;
+        operations[operations.length - 1].matrixAfter = m.clone();
+    };
 
     for (let col = 0; col < m.cols && currentRow < m.rows; col++) {
         // Find pivot (largest absolute value in column)
@@ -146,18 +165,46 @@ export function computeRREF(matrix) {
 
         // Swap rows if needed
         if (pivotRow !== currentRow) {
+            const notation = `E_{${currentRow + 1}${pivotRow + 1}}`;
+            const description = `Swap row ${currentRow + 1} and row ${pivotRow + 1}`;
+            recordOperation('swap', notation, description, {
+                row1: currentRow,
+                row2: pivotRow
+            });
             m.swapRows(currentRow, pivotRow);
+            updateLastOperation();
         }
 
         // Scale pivot row to make pivot = 1
         const pivot = m.get(currentRow, col);
-        m.multiplyRow(currentRow, new Fraction(1, 1).divide(pivot));
+        const pivotFraction = pivot instanceof Fraction ? pivot : Fraction.from(pivot);
+        const one = new Fraction(1, 1);
+
+        if (!pivotFraction.equals(one)) {
+            const scalar = one.divide(pivotFraction);
+            const notation = `E_{(${scalar.toLatex()})}^{${currentRow + 1}}`;
+            const description = `Multiply row ${currentRow + 1} by ${scalar.toLatex()}`;
+            recordOperation('scale', notation, description, {
+                row: currentRow,
+                scalar: scalar
+            });
+            m.multiplyRow(currentRow, scalar);
+            updateLastOperation();
+        }
 
         // Eliminate all other entries in this column
         for (let row = 0; row < m.rows; row++) {
             if (row !== currentRow && !m.get(row, col).isZero()) {
                 const factor = m.get(row, col).negate();
+                const notation = `E_{(${factor.toLatex()})}^{${row + 1}${currentRow + 1}}`;
+                const description = `Multiply row ${currentRow + 1} by ${factor.toLatex()} and add to row ${row + 1}`;
+                recordOperation('add', notation, description, {
+                    targetRow: row,
+                    sourceRow: currentRow,
+                    scalar: factor
+                });
                 m.addRowMultiple(row, currentRow, factor);
+                updateLastOperation();
             }
         }
 
@@ -165,7 +212,7 @@ export function computeRREF(matrix) {
         currentRow++;
     }
 
-    return { rref: m, pivots };
+    return { rref: m, pivots, operations };
 }
 
 /**

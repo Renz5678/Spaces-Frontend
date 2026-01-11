@@ -131,7 +131,7 @@ function formatBasis(basis) {
 /**
  * Compute all four fundamental subspaces
  */
-export function computeAllSpaces(matrixData) {
+export function computeAllSpaces(matrixData, trackOperations = false) {
     // Validate input
     if (!matrixData || !Array.isArray(matrixData) || matrixData.length === 0) {
         throw new Error('Matrix cannot be empty');
@@ -151,8 +151,8 @@ export function computeAllSpaces(matrixData) {
     // Create matrix
     const matrix = new Matrix(matrixData);
 
-    // Compute RREF and rank
-    const { rref, pivots } = computeRREF(matrix);
+    // Compute RREF and rank (with operation tracking)
+    const { rref, pivots, operations } = computeRREF(matrix, trackOperations);
     const rank = pivots.length;
 
     // Compute all spaces
@@ -167,7 +167,7 @@ export function computeAllSpaces(matrixData) {
     const nullSpaceFormatted = formatBasis(nullSpace);
     const leftNullSpaceFormatted = formatBasis(leftNullSpace);
 
-    return {
+    const result = {
         matrix: {
             data: matrix.toArray(),
             rows: m,
@@ -215,4 +215,11 @@ export function computeAllSpaces(matrixData) {
             )
         }
     };
+
+    // Add operations if tracking was enabled
+    if (trackOperations && operations) {
+        result.operations = operations;
+    }
+
+    return result;
 }

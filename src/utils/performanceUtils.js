@@ -1,10 +1,25 @@
 /**
- * Performance utility functions for debouncing and throttling
+ * Performance monitoring utilities
+ * Helps track and optimize application performance
  */
 
 /**
- * Debounce function to limit execution rate
- * Useful for search inputs, resize handlers, etc.
+ * Measure component render time
+ */
+export function measureRenderTime(componentName, callback) {
+    const start = performance.now();
+    const result = callback();
+    const end = performance.now();
+
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`${componentName} render time: ${(end - start).toFixed(2)}ms`);
+    }
+
+    return result;
+}
+
+/**
+ * Debounce function for performance optimization
  */
 export function debounce(func, wait) {
     let timeout;
@@ -19,43 +34,15 @@ export function debounce(func, wait) {
 }
 
 /**
- * Throttle function to ensure function runs at most once per interval
- * Useful for scroll handlers, mousemove, etc.
+ * Throttle function for performance optimization
  */
 export function throttle(func, limit) {
     let inThrottle;
-    return function executedFunction(...args) {
+    return function (...args) {
         if (!inThrottle) {
-            func(...args);
+            func.apply(this, args);
             inThrottle = true;
             setTimeout(() => inThrottle = false, limit);
         }
     };
-}
-
-/**
- * Create a cleanup function for event listeners
- */
-export function createCleanup(cleanupFunctions = []) {
-    return () => {
-        cleanupFunctions.forEach(fn => fn());
-    };
-}
-
-/**
- * Lazy load images with Intersection Observer
- */
-export function lazyLoadImage(img) {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const lazyImage = entry.target;
-                lazyImage.src = lazyImage.dataset.src;
-                observer.unobserve(lazyImage);
-            }
-        });
-    });
-
-    observer.observe(img);
-    return () => observer.disconnect();
 }

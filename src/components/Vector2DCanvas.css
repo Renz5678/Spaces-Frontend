@@ -1,0 +1,28 @@
+.vector-2d-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.vector-2d-canvas {
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background: #fafafa;
+    cursor: crosshair;
+}
+
+.vector-2d-canvas:hover {
+    border-color: #000000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .vector-2d-canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+}

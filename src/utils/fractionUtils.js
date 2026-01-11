@@ -86,6 +86,16 @@ export class Fraction {
     }
 
     /**
+     * Check if two fractions are equal
+     */
+    equals(other) {
+        if (!(other instanceof Fraction)) {
+            return false;
+        }
+        return this.numerator === other.numerator && this.denominator === other.denominator;
+    }
+
+    /**
      * Convert to decimal number
      */
     toNumber() {

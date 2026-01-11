@@ -117,7 +117,7 @@ export function validateMatrix(matrixData) {
  * Main computation function
  * Parses, validates, and computes all fundamental spaces
  */
-export function computeMatrix(matrixData) {
+export function computeMatrix(matrixData, trackOperations = true) {
     try {
         // Parse the matrix
         const parsed = parseMatrixInput(matrixData);
@@ -125,8 +125,8 @@ export function computeMatrix(matrixData) {
         // Validate
         validateMatrix(parsed);
 
-        // Compute all spaces
-        const results = computeAllSpaces(parsed);
+        // Compute all spaces (with operation tracking)
+        const results = computeAllSpaces(parsed, trackOperations);
 
         return {
             success: true,

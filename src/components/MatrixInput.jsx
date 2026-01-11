@@ -10,7 +10,9 @@ const MatrixInput = ({ onCompute, isLoading, examples, initialMatrix }) => {
     const [rows, setRows] = useState(MATRIX_LIMITS.DEFAULT_ROWS);
     const [cols, setCols] = useState(MATRIX_LIMITS.DEFAULT_COLS);
     const [matrix, setMatrix] = useState(
-        createEmptyMatrix(MATRIX_LIMITS.DEFAULT_ROWS, MATRIX_LIMITS.DEFAULT_COLS)
+        Array(MATRIX_LIMITS.DEFAULT_ROWS).fill(null).map(() =>
+            Array(MATRIX_LIMITS.DEFAULT_COLS).fill('')
+        )
     );
     const [computeSuccess, setComputeSuccess] = useState(false);
     const computeButtonRef = useRef(null);
@@ -43,7 +45,12 @@ const MatrixInput = ({ onCompute, isLoading, examples, initialMatrix }) => {
 
         setRows(validated.rows);
         setCols(validated.cols);
-        setMatrix(prev => resizeMatrix(prev, validated.rows, validated.cols));
+
+        // Use functional update to ensure we're working with latest state
+        setMatrix(prev => {
+            const resized = resizeMatrix(prev, validated.rows, validated.cols);
+            return resized;
+        });
     }, []);
 
     const handleCellChange = useCallback((i, j, value) => {
@@ -72,16 +79,19 @@ const MatrixInput = ({ onCompute, isLoading, examples, initialMatrix }) => {
             if (result) {
                 setComputeSuccess(true);
 
-                // Smooth scroll to results after a brief delay
+                // Smooth scroll to results with better timing
                 setTimeout(() => {
                     const resultsElement = document.querySelector('.results-container');
                     if (resultsElement) {
-                        resultsElement.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
+                        const yOffset = -20; // Offset from top
+                        const y = resultsElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+                        window.scrollTo({
+                            top: y,
+                            behavior: 'smooth'
                         });
                     }
-                }, 300);
+                }, 400); // Slightly longer delay for smoother experience
             }
         } catch (error) {
             alert(error.message);
@@ -99,8 +109,14 @@ const MatrixInput = ({ onCompute, isLoading, examples, initialMatrix }) => {
     }, []);
 
     const clearMatrix = useCallback(() => {
-        setMatrix(createEmptyMatrix(rows, cols));
+        setMatrix(Array(rows).fill(null).map(() => Array(cols).fill('')));
     }, [rows, cols]);
+
+    const fillZeros = useCallback(() => {
+        setMatrix(prev => prev.map(row =>
+            row.map(cell => cell.trim() === '' ? '0' : cell)
+        ));
+    }, []);
 
     const gridStyle = useMemo(() => ({
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
@@ -207,6 +223,14 @@ const MatrixInput = ({ onCompute, isLoading, examples, initialMatrix }) => {
                     disabled={isLoading}
                 >
                     Clear
+                </button>
+                <button
+                    className="btn btn-secondary"
+                    onClick={fillZeros}
+                    disabled={isLoading}
+                    title="Fill all blank cells with zeros"
+                >
+                    Fill Zeros
                 </button>
             </div>
         </div>

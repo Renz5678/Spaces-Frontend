@@ -94,10 +94,10 @@
     color: #ffffff;
     padding: 0.5rem 1rem;
     border-radius: 4px;
-    font-family: 'Times New Roman', serif;
-    font-size: 1.1rem;
-    font-weight: bold;
+    font-size: 1rem;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
 .operation-swap {

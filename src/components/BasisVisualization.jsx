@@ -25,10 +25,16 @@ const BasisVisualization = ({ results, onClose }) => {
         results.null_space.dimension > 0 ||
         results.left_null_space.dimension > 0;
 
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
     if (!hasVectors) {
         return (
-            <div className="basis-modal-overlay" onClick={onClose}>
-                <div className="basis-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="basis-modal-overlay" onClick={handleOverlayClick}>
+                <div className="basis-modal">
                     <button className="modal-close" onClick={onClose}>×</button>
                     <div className="basis-empty">
                         <p>All subspaces are trivial - no vectors to visualize.</p>
@@ -40,8 +46,8 @@ const BasisVisualization = ({ results, onClose }) => {
 
     if (!is2D && !is3D) {
         return (
-            <div className="basis-modal-overlay" onClick={onClose}>
-                <div className="basis-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="basis-modal-overlay" onClick={handleOverlayClick}>
+                <div className="basis-modal">
                     <button className="modal-close" onClick={onClose}>×</button>
                     <div className="basis-empty">
                         <p>Visualization is only available for 2D and 3D matrices.</p>
@@ -64,8 +70,8 @@ const BasisVisualization = ({ results, onClose }) => {
     const shouldShow3D = viewMode === '3d' || (viewMode === 'auto' && is3D);
 
     return (
-        <div className="basis-modal-overlay" onClick={onClose}>
-            <div className="basis-modal basis-modal-large" onClick={(e) => e.stopPropagation()}>
+        <div className="basis-modal-overlay" onClick={handleOverlayClick}>
+            <div className="basis-modal basis-modal-large">
                 <button className="modal-close" onClick={onClose}>×</button>
 
                 <div className="basis-header">

@@ -34,6 +34,18 @@ const RowOperationsDisplay = memo(({ operations }) => {
         }
     };
 
+    const LaTeXNotation = ({ latex }) => {
+        try {
+            const html = katex.renderToString(latex, {
+                throwOnError: false,
+                displayMode: false
+            });
+            return <span dangerouslySetInnerHTML={{ __html: html }} />;
+        } catch (error) {
+            return <span>{latex}</span>;
+        }
+    };
+
     const currentOperation = operations[currentStep];
 
     return (
@@ -72,7 +84,7 @@ const RowOperationsDisplay = memo(({ operations }) => {
                     <div className="operation-display">
                         <div className="operation-header">
                             <span className={`operation-badge operation-${currentOperation.type}`}>
-                                {currentOperation.notation}
+                                <LaTeXNotation latex={currentOperation.notation} />
                             </span>
                             <span className="operation-description">
                                 {currentOperation.description}

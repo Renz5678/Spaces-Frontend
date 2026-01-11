@@ -2,25 +2,34 @@
     display: flex;
     flex-direction: column;
     background: #ffffff;
-    border-radius: 8px;
+    border-radius: 12px;
     border: 1px solid #e0e0e0;
     overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .vector-3d-scene {
     width: 100%;
     height: 600px;
     position: relative;
+    background: #fafafa;
 }
 
 .vector-3d-scene canvas {
     display: block;
     width: 100% !important;
     height: 100% !important;
+    cursor: grab;
+    touch-action: none;
+    pointer-events: auto;
+}
+
+.vector-3d-scene canvas:active {
+    cursor: grabbing;
 }
 
 .vector-3d-controls {
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.5rem;
     background: #f8f8f8;
     border-top: 1px solid #e0e0e0;
     text-align: center;
@@ -28,8 +37,11 @@
 
 .vector-3d-controls p {
     margin: 0;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
     color: #666666;
+    letter-spacing: 0.02em;
 }
 
 /* Responsive */
@@ -39,6 +51,10 @@
     }
 
     .vector-3d-controls p {
-        font-size: 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .vector-3d-container {
+        border-radius: 12px;
     }
 }

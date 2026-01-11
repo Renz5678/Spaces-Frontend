@@ -2,13 +2,10 @@ import { useEffect, useRef, useState, memo } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import './ResultsDisplay.css';
-import DesmosVisualization from './DesmosVisualization';
 import RowOperationsDisplay from './RowOperationsDisplay';
 import BasisVisualization from './BasisVisualization';
-import { canVisualize } from '../utils/desmosUtils';
 
 const ResultsDisplay = memo(({ results }) => {
-    const [showDesmos, setShowDesmos] = useState(false);
     const [showBasisViz, setShowBasisViz] = useState(false);
 
     if (!results) return null;
@@ -86,39 +83,20 @@ const ResultsDisplay = memo(({ results }) => {
                 </div>
             </div>
 
-            {canVisualize(results) && (
-                <div className="visualize-section">
-                    <button
-                        className="btn-visualize"
-                        onClick={() => setShowDesmos(true) || setShowBasisViz(false)}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
-                        Visualize in Desmos
-                    </button>
-                    <button
-                        className="btn-visualize"
-                        onClick={() => setShowDesmos(false) || setShowBasisViz(true)}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                        </svg>
-                        Visualize Basis Vectors
-                    </button>
-                </div>
-            )}
-
-            {showDesmos && (
-                <DesmosVisualization
-                    results={results}
-                    onClose={() => setShowDesmos(false)}
-                />
-            )}
+            {/* 3D Visualization */}
+            <div className="visualize-section">
+                <button
+                    className="btn-visualize-3d"
+                    onClick={() => setShowBasisViz(true)}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    <span>Visualize in 3D</span>
+                </button>
+            </div>
 
             {showBasisViz && (
                 <BasisVisualization

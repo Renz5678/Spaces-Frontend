@@ -34,6 +34,8 @@ const Vector3DScene = ({ subspaces }) => {
         // Renderer setup
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+        renderer.domElement.style.display = 'block';
+        renderer.domElement.style.outline = 'none';
         containerRef.current.appendChild(renderer.domElement);
         rendererRef.current = renderer;
 
@@ -41,6 +43,12 @@ const Vector3DScene = ({ subspaces }) => {
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
+        controls.enableZoom = true;
+        controls.enableRotate = true;
+        controls.enablePan = true;
+        controls.autoRotate = false;
+        controls.minDistance = 2;
+        controls.maxDistance = 20;
         controlsRef.current = controls;
 
         // Add lights
@@ -105,20 +113,25 @@ const Vector3DScene = ({ subspaces }) => {
         };
         animate();
 
-        // Handle resize
-        const handleResize = () => {
-            if (!containerRef.current) return;
-            const width = containerRef.current.clientWidth;
-            const height = containerRef.current.clientHeight;
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-            renderer.setSize(width, height);
-        };
-        window.addEventListener('resize', handleResize);
+        // Handle resize with ResizeObserver for better responsiveness
+        const resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                const { width, height } = entry.contentRect;
+                if (width > 0 && height > 0) {
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(width, height);
+                }
+            }
+        });
+
+        if (containerRef.current) {
+            resizeObserver.observe(containerRef.current);
+        }
 
         // Cleanup
         return () => {
-            window.removeEventListener('resize', handleResize);
+            resizeObserver.disconnect();
             if (containerRef.current && renderer.domElement) {
                 containerRef.current.removeChild(renderer.domElement);
             }

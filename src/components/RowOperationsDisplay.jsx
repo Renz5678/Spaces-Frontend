@@ -46,6 +46,25 @@ const RowOperationsDisplay = memo(({ operations }) => {
         }
     };
 
+    const renderDescription = (description) => {
+        // Split description by LaTeX patterns (e.g., \frac{1}{2}, -\frac{3}{4})
+        // Match LaTeX commands like \frac{...}{...}
+        const latexPattern = /(\\frac\{[^}]+\}\{[^}]+\}|-?\\frac\{[^}]+\}\{[^}]+\})/g;
+        const parts = description.split(latexPattern);
+
+        return (
+            <span>
+                {parts.map((part, index) => {
+                    // Check if this part is a LaTeX expression
+                    if (part && part.includes('\\frac')) {
+                        return <LaTeXNotation key={index} latex={part} />;
+                    }
+                    return <span key={index}>{part}</span>;
+                })}
+            </span>
+        );
+    };
+
     const currentOperation = operations[currentStep];
 
     return (
@@ -87,7 +106,7 @@ const RowOperationsDisplay = memo(({ operations }) => {
                                 <LaTeXNotation latex={currentOperation.notation} />
                             </span>
                             <span className="operation-description">
-                                {currentOperation.description}
+                                {renderDescription(currentOperation.description)}
                             </span>
                         </div>
 
@@ -137,8 +156,10 @@ const RowOperationsDisplay = memo(({ operations }) => {
                                     <span className={`step-badge operation-${op.type}`}>
                                         {idx + 1}
                                     </span>
-                                    <span className="step-notation">{op.notation}</span>
-                                    <span className="step-desc">{op.description}</span>
+                                    <span className="step-notation">
+                                        <LaTeXNotation latex={op.notation} />
+                                    </span>
+                                    <span className="step-desc">{renderDescription(op.description)}</span>
                                 </div>
                             ))}
                         </div>

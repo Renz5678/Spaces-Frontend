@@ -182,7 +182,7 @@ export function computeRREF(matrix, trackOperations = false) {
 
         if (!pivotFraction.equals(one)) {
             const scalar = one.divide(pivotFraction);
-            const notation = `E_{(${scalar.toLatex()})}^{${currentRow + 1}}`;
+            const notation = `E_{${currentRow + 1}}(${scalar.toLatex()})`;
             const description = `Multiply row ${currentRow + 1} by ${scalar.toLatex()}`;
             recordOperation('scale', notation, description, {
                 row: currentRow,
@@ -196,7 +196,7 @@ export function computeRREF(matrix, trackOperations = false) {
         for (let row = 0; row < m.rows; row++) {
             if (row !== currentRow && !m.get(row, col).isZero()) {
                 const factor = m.get(row, col).negate();
-                const notation = `E_{(${factor.toLatex()})}^{${row + 1}${currentRow + 1}}`;
+                const notation = `E_{${row + 1}${currentRow + 1}}(${factor.toLatex()})`;
                 const description = `Multiply row ${currentRow + 1} by ${factor.toLatex()} and add to row ${row + 1}`;
                 recordOperation('add', notation, description, {
                     targetRow: row,

@@ -28,12 +28,29 @@ export function computeColumnSpace(matrix) {
 
 /**
  * Compute the row space of a matrix
- * Returns basis vectors as the non-zero rows of RREF
+ * Returns basis vectors as rows from the original matrix corresponding to pivot rows
  */
 export function computeRowSpace(matrix) {
-    const { rref } = computeRREF(matrix);
-    const nonZeroRows = getNonZeroRows(rref);
-    return nonZeroRows;
+    const { pivots } = computeRREF(matrix);
+    const basis = [];
+
+    // The rows of the original matrix corresponding to pivot positions form a basis for the row space
+    // We need to identify which rows contain the pivots
+    const pivotRows = new Set();
+    for (let i = 0; i < pivots.length; i++) {
+        pivotRows.add(i);
+    }
+
+    // Extract the rows from the original matrix
+    for (const row of pivotRows) {
+        const vector = [];
+        for (let j = 0; j < matrix.cols; j++) {
+            vector.push(matrix.get(row, j));
+        }
+        basis.push(vector);
+    }
+
+    return basis;
 }
 
 /**

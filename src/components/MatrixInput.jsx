@@ -131,10 +131,13 @@ const MatrixInput = ({ onCompute, isLoading, examples, initialMatrix }) => {
                         Rows:
                         <input
                             type="number"
+                            inputMode="numeric"
                             min={MATRIX_LIMITS.MIN_DIMENSION}
                             max={MATRIX_LIMITS.MAX_DIMENSION}
                             value={rows}
                             onChange={(e) => handleDimensionChange(parseInt(e.target.value) || 1, cols)}
+                            onFocus={(e) => e.target.select()}
+                            onClick={(e) => e.target.select()}
                             disabled={isLoading}
                         />
                     </label>
@@ -142,10 +145,13 @@ const MatrixInput = ({ onCompute, isLoading, examples, initialMatrix }) => {
                         Columns:
                         <input
                             type="number"
+                            inputMode="numeric"
                             min={MATRIX_LIMITS.MIN_DIMENSION}
                             max={MATRIX_LIMITS.MAX_DIMENSION}
                             value={cols}
                             onChange={(e) => handleDimensionChange(rows, parseInt(e.target.value) || 1)}
+                            onFocus={(e) => e.target.select()}
+                            onClick={(e) => e.target.select()}
                             disabled={isLoading}
                         />
                     </label>
